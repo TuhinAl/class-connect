@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -39,6 +40,8 @@ func (s *APIServer) Run() error {
 		Addr:    s.Host + ":" + s.Port,
 		Handler: router,
 	}
+	fmt.Println()
+
 	log.Printf("Server is listening on http://%s:%s", s.Host, s.Port)
 	return server.ListenAndServe()
 }
