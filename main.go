@@ -1,8 +1,7 @@
 package main
 
-import "golang-api/utility/configs"
+import "github.com/TuhinAl/class-connect/internal/utility/configs"
 
 func main() {
-	server := configs.NewAPIServer(":8080")
-	server.Run()
+	configs.NewAPIServer(":8080").Run()
 }

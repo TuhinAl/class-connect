@@ -8,6 +8,7 @@ import (
 type APIServer struct {
 	Host string `json:"host"`
 	Port string `json:"port"`
+	
 }
 
 func NewAPIServer(addr string) *APIServer {
@@ -32,6 +33,7 @@ func (s *APIServer) Run() error {
 		w.Write([]byte("User ID: " + userId))
 
 	})
+
 
 	server := http.Server{
 		Addr:    s.Host + ":" + s.Port,
