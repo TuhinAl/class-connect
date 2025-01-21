@@ -1,23 +1,23 @@
 package models
 
 type Student struct {
-	ID   int
-	StudentId   int64 // will Improve to uuid
-	FirstName string
-	LastName string
-	FatherName string
-	Phone string
-	Gender string // todo: enum
-	Course string // todo: enum
-	Email string
-	IsActive bool
-	ClassID int
-	Class string // todo: enum
-	Password string
-	FatherPhone string
-	AdmissionDate string // todo: date
-	AdmissionFee float64
-	TotalFee float64
-	RemainingFee float64
-	MonthlyFee float64
+	ID            int     `json:"id"`
+	StudentId     int64   `json:"student_id"` // will Improve to uuid
+	FirstName     string  `json:"first_name"`
+	LastName      string  `json:"last_name"`
+	FatherName    string  `json:"father_name"`
+	Phone         string  `json:"phone"`
+	Gender        string  `json:"gender"` // todo: enum
+	Course        string  `json:"course"` // todo: enum
+	Email         string  `json:"email"`
+	IsActive      bool    `json:"is_active"`
+	ClassID       int     `json:"class_id"`
+	Class         string  `json:"class"` // todo: enum
+	Password      string  `json:"password,omitempty"`
+	FatherPhone   string  `json:"father_phone"`
+	AdmissionDate string  `json:"admission_date"` // todo: date
+	AdmissionFee  float64 `json:"admission_fee"`
+	TotalFee      float64 `json:"total_fee"`
+	RemainingFee  float64 `json:"remaining_fee"`
+	MonthlyFee    float64 `json:"monthly_fee"`
 }

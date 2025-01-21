@@ -1,8 +1,10 @@
 package main
 
 import (
+	"golang-api/cmd/api/handler"
 	"golang-api/internal/utility/configs"
 	"log"
+	"net/http"
 )
 
 // import "golang-api/internal/utility/configs"
@@ -16,6 +18,14 @@ func main() {
 			Port: "8080",
 		},
 	}
+	
+	log.Fatal(applicationConfig.RunApp(externalRoutes()))
+}
 
-	log.Fatal(applicationConfig.RunApp())
+
+func  externalRoutes() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /health", handler.ApplicationHealthHandler)
+	mux.HandleFunc("GET /student", handler.GetStudentHandler)
+	return mux
 }

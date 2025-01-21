@@ -16,11 +16,12 @@ rm -f bin/golang-api
 
 # Build for Linux
 echo "Building CLASS-CONNECT Application..."
+# Build the main package
 GOOS=linux GOARCH=amd64 go build -o bin/golang-api cmd/api/main.go
 
 echo "Build complete! Binary is located at bin/golang-api"
 
-# Run the application
+# Start the server
 echo "Starting the server..."
 
 # Check if the binary was actually created
