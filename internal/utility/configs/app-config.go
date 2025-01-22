@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"golang-api/internal/repository"
 	"log"
 	"net/http"
 	"time"
@@ -13,6 +14,7 @@ type Config struct {
 
 type ApplicationConfig struct {
 	Server Config `json:"server"`
+	Store  repository.Storage
 }
 
 // func (app *ApplicationConfig) RunApp(mux *http.ServeMux) error {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"golang-api/cmd/api/handler"
+	"golang-api/internal/repository"
 	"golang-api/internal/utility/configs"
 	"log"
 	"net/http"
@@ -21,6 +22,7 @@ func main() {
 			Host: "localhost",
 			Port: "8080",
 		},
+		Store: repository.NewStorage(nil),
 	}
 
 	log.Fatal(applicationConfig.RunApp(externalRoutes()))
