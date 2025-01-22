@@ -1,6 +1,7 @@
 package configs
 
 import (
+	dbconfig "golang-api/internal/db-config"
 	"golang-api/internal/repository"
 	"log"
 	"net/http"
@@ -10,11 +11,13 @@ import (
 type Config struct {
 	Host string `json:"host"`
 	Port string `json:"port"`
+	DB   dbconfig.DBConfig `json:"db"`
 }
 
 type ApplicationConfig struct {
 	Server Config `json:"server"`
 	Store  repository.Storage
+	
 }
 
 // func (app *ApplicationConfig) RunApp(mux *http.ServeMux) error {
