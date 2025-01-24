@@ -1,7 +1,6 @@
-package models
+package validation
 
-type Student struct {
-	ID            int     `json:"id"`
+type StudentProxy struct {
 	StudentId     int64   `json:"student_id"` // will Improve to uuid
 	FirstName     string  `json:"first_name"`
 	LastName      string  `json:"last_name"`
@@ -15,7 +14,6 @@ type Student struct {
 	ClassName     string  `json:"class_name"` // todo: enum
 	Password      string  `json:"password,omitempty"`
 	FatherPhone   string  `json:"father_phone"`
-	AdmissionDate string  `json:"admission_date"` // todo: date
 	AdmissionFee  float64 `json:"admission_fee"`
 	TotalFee      float64 `json:"total_fee"`
 	RemainingFee  float64 `json:"remaining_fee"`

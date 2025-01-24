@@ -1,4 +1,4 @@
-package configs
+package handler
 
 import (
 	dbconfig "golang-api/internal/db-config"
@@ -15,9 +15,9 @@ type Config struct {
 }
 
 type ApplicationConfig struct {
-	Server Config `json:"server"`
+	Server Config 
 	Store  repository.Storage
-	
+
 }
 
 // func (app *ApplicationConfig) RunApp(mux *http.ServeMux) error {

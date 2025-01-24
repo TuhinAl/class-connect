@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS student_information (
     email citext UNIQUE NOT NULL,
     is_active BOOLEAN DEFAULT true,
     class_id INTEGER NOT NULL,
-    class class_type NOT NULL,
+    class_name class_type NOT NULL,
     password BYTEA NOT NULL,
     father_phone VARCHAR(20) NOT NULL,
     admission_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -53,3 +53,4 @@ CREATE TRIGGER update_student_updated_at
     BEFORE UPDATE ON student_information
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
