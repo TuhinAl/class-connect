@@ -26,6 +26,7 @@ func ExternalRoutes(app *ApplicationConfig ) http.Handler {
 		router.Route("/student", func(router chi.Router) {
 			router.Get("/", GetStudentHandler)
 			router.Post("/create", app.CreateStudentHandler)
+			router.Get("/get-by-id/{studentId}", app.GetStudentByIdHandler)
 		})
 	})
 

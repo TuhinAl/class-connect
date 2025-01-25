@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"golang-api/models"
 )
 
@@ -92,4 +93,46 @@ func (studentStore *StudentStore) CreateStudent(ctx context.Context, student *mo
 		return nil, err
 	}
 	return student, nil
+}
+
+
+func (s * StudentStore) GetStudentByID(ctx context.Context, id int64) (*models.Student, error) {
+
+	query := `SELECT id, student_id, first_name, last_name, father_name, phone, gender,
+	  course, email, is_active, class_id, class_name, password, father_phone, admission_date, admission_fee, 
+	  total_fee, remaining_fee, monthly_fee
+	FROM student_information WHERE id = $1`
+
+	var student models.Student
+	err := s.db.QueryRowContext(ctx, query, id).Scan(
+		&student.ID,
+		&student.StudentId,
+		&student.FirstName,
+		&student.LastName,
+		&student.FatherName,
+		&student.Phone,
+		&student.Gender,
+		&student.Course,
+		&student.Email,
+		&student.IsActive,
+		&student.ClassID,
+		&student.ClassName,
+		&student.Password,
+		&student.FatherPhone,
+		&student.AdmissionDate,
+		&student.AdmissionFee,
+		&student.TotalFee,
+		&student.RemainingFee,
+		&student.MonthlyFee,
+	)
+
+	if err != nil {
+		switch  {
+			case errors.Is(err, sql.ErrNoRows):
+				return nil, ErrorStudentNotFound
+			default:
+				return nil, err
+		}
+	}
+	return &student, nil
 }

@@ -1,11 +1,18 @@
 package handler
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"golang-api/internal/validation"
 	"golang-api/models"
+	"log"
 	"net/http"
+	"strconv"
 	"time"
+
+	"github.com/go-chi/chi"
 )
 
 func GetStudentHandler(w http.ResponseWriter, r *http.Request) {
@@ -77,4 +84,36 @@ func (app *ApplicationConfig) CreateStudentHandler(w http.ResponseWriter, r *htt
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(createdStudent)
+}
+
+func (app *ApplicationConfig) GetStudentByIdHandler(w http.ResponseWriter, r *http.Request) {
+
+	sudentId := chi.URLParam(r, "studentId")
+	id, err := strconv.ParseInt(sudentId, 10, 64)
+
+	if err != nil {
+		WriteJSONError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	log.Println(id)
+	fmt.Println("==========Student Id===========", id)
+
+	ctx := r.Context()
+	student, err := app.Store.Student.GetStudentByID(ctx, id)
+	if err != nil {
+		switch{
+		case errors.Is(err, sql.ErrNoRows):
+			WriteJSONError(w, http.StatusNotFound, err)
+			return
+		default:
+			WriteJSONError(w, http.StatusInternalServerError, err)
+			return
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(student)
+
 }
