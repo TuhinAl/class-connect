@@ -23,6 +23,7 @@ func ExternalRoutes(app *ApplicationConfig ) http.Handler {
 
 	router.Route("/v1", func(router chi.Router) {
 		router.Get("/health", ApplicationHealthHandler)
+		
 		router.Route("/student", func(router chi.Router) {
 			router.Get("/", GetStudentHandler)
 			router.Post("/create", app.CreateStudentHandler)

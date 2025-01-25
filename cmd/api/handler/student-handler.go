@@ -47,7 +47,8 @@ func (app *ApplicationConfig) CreateStudentHandler(w http.ResponseWriter, r *htt
 
 	var payload validation.StudentProxy
 	if err := ReadJSONRequest(w, r, &payload); err != nil {
-		WriteJSONError(w, http.StatusBadRequest, err)
+		// WriteJSONError(w, http.StatusBadRequest, err)
+		app.BadRequestError(w, r, err)
 		return
 	}
 
@@ -77,7 +78,8 @@ func (app *ApplicationConfig) CreateStudentHandler(w http.ResponseWriter, r *htt
 	createdStudent, err := app.Store.Student.CreateStudent(ctx, student)
 
 	if err != nil {
-		WriteJSONError(w, http.StatusInternalServerError, err)
+		// WriteJSONError(w, http.StatusInternalServerError, err)
+		app.BadRequestError(w, r, err)
 		return
 	}
 
@@ -92,7 +94,8 @@ func (app *ApplicationConfig) GetStudentByIdHandler(w http.ResponseWriter, r *ht
 	id, err := strconv.ParseInt(sudentId, 10, 64)
 
 	if err != nil {
-		WriteJSONError(w, http.StatusInternalServerError, err)
+		// WriteJSONError(w, http.StatusInternalServerError, err)
+		app.InternalServerError(w, r, err)
 		return
 	}
 
@@ -104,10 +107,10 @@ func (app *ApplicationConfig) GetStudentByIdHandler(w http.ResponseWriter, r *ht
 	if err != nil {
 		switch{
 		case errors.Is(err, sql.ErrNoRows):
-			WriteJSONError(w, http.StatusNotFound, err)
+			app.NotfoundError(w, r, err)
 			return
 		default:
-			WriteJSONError(w, http.StatusInternalServerError, err)
+			app.InternalServerError(w, r, err)
 			return
 		}
 	}
