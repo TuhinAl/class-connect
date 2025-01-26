@@ -95,8 +95,7 @@ func (studentStore *StudentStore) CreateStudent(ctx context.Context, student *mo
 	return student, nil
 }
 
-
-func (s * StudentStore) GetStudentByID(ctx context.Context, id int64) (*models.Student, error) {
+func (s *StudentStore) GetStudentByID(ctx context.Context, id int64) (*models.Student, error) {
 
 	query := `SELECT id, student_id, first_name, last_name, father_name, phone, gender,
 	  course, email, is_active, class_id, class_name, password, father_phone, admission_date, admission_fee, 
@@ -127,12 +126,33 @@ func (s * StudentStore) GetStudentByID(ctx context.Context, id int64) (*models.S
 	)
 
 	if err != nil {
-		switch  {
-			case errors.Is(err, sql.ErrNoRows):
-				return nil, ErrorStudentNotFound
-			default:
-				return nil, err
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrorStudentNotFound
+		default:
+			return nil, err
 		}
 	}
 	return &student, nil
+}
+
+func (s *StudentStore) DeleteStudentByID(ctx context.Context, id int64) error {
+
+	query := `DELETE FROM student_information WHERE id = $1`
+
+	res, err := s.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+
+	}
+
+	rows, err := res.RowsAffected()
+	if err != nil {
+		return err
+
+	}
+	if rows == 0 {
+		return ErrorStudentNotFound
+	}
+	return nil
 }
