@@ -15,6 +15,7 @@ type Storage struct {
 	Student interface {
 		CreateStudent(ctx context.Context, student *models.Student) (*models.Student, error)
 		GetStudentByID(ctx context.Context, id int64) (*models.Student, error)
+		DeleteStudentByID(ctx context.Context, id int64) error
 	}
 	//Teacher TeacherRepository
 }

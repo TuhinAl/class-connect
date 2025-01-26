@@ -3,11 +3,12 @@ package handler
 import (
 	"net/http"
 	"time"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
 
-func ExternalRoutes(app *ApplicationConfig ) http.Handler {
+func ExternalRoutes(app *ApplicationConfig) http.Handler {
 	router := chi.NewRouter()
 
 	// A good base middleware stack
@@ -23,11 +24,12 @@ func ExternalRoutes(app *ApplicationConfig ) http.Handler {
 
 	router.Route("/v1", func(router chi.Router) {
 		router.Get("/health", ApplicationHealthHandler)
-		
+
 		router.Route("/student", func(router chi.Router) {
 			router.Get("/", GetStudentHandler)
 			router.Post("/create", app.CreateStudentHandler)
 			router.Get("/get-by-id/{studentId}", app.GetStudentByIdHandler)
+			router.Delete("/delete-by-id/{studentId}", app.DeleteStudentByIdHandler)
 		})
 	})
 

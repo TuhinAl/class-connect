@@ -120,3 +120,38 @@ func (app *ApplicationConfig) GetStudentByIdHandler(w http.ResponseWriter, r *ht
 	json.NewEncoder(w).Encode(student)
 
 }
+
+
+
+func (app *ApplicationConfig) DeleteStudentByIdHandler(w http.ResponseWriter, r *http.Request) {
+
+	sudentId := chi.URLParam(r, "studentId")
+	id, err := strconv.ParseInt(sudentId, 10, 64)
+
+	if err != nil {
+		// WriteJSONError(w, http.StatusInternalServerError, err)
+		app.InternalServerError(w, r, err)
+		return
+	}
+
+	log.Println(id)
+	fmt.Println("==========Student Id===========", id)
+
+	ctx := r.Context()
+	 err = app.Store.Student.DeleteStudentByID(ctx, id)
+	if err != nil {
+		switch{
+		case errors.Is(err, sql.ErrNoRows):
+			app.NotfoundError(w, r, err)
+			return
+		default:
+			app.InternalServerError(w, r, err)
+			return
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	// json.NewEncoder(w).Encode(student)
+
+}
