@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+	"golang-api/internal/validation"
 	"golang-api/models"
 )
 
@@ -155,4 +157,28 @@ func (s *StudentStore) DeleteStudentByID(ctx context.Context, id int64) error {
 		return ErrorStudentNotFound
 	}
 	return nil
+}
+
+func (s *StudentStore) DeactivateStudentByID(ctx context.Context, id int64, activeStatus bool) (*validation.StudentProxy, error) {
+
+	query := `UPDATE student_information SET is_active = $2 WHERE id = $1 RETURNING id, first_name, last_name, student_id, email, is_active`
+
+	var student validation.StudentProxy
+	err := s.db.QueryRowContext(ctx, query, id, activeStatus).Scan(
+		&student.Id,
+		&student.FirstName,
+		&student.LastName,
+		&student.StudentId,
+		&student.Email,
+		&student.IsActive,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("no user found with that Id: %d", id)
+		}
+		return nil, fmt.Errorf("failed to update student status: %w", err)
+
+	}
+	return &student, err
 }
