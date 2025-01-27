@@ -105,7 +105,7 @@ func (app *ApplicationConfig) GetStudentByIdHandler(w http.ResponseWriter, r *ht
 	ctx := r.Context()
 	student, err := app.Store.Student.GetStudentByID(ctx, id)
 	if err != nil {
-		switch{
+		switch {
 		case errors.Is(err, sql.ErrNoRows):
 			app.NotfoundError(w, r, err)
 			return
@@ -120,8 +120,6 @@ func (app *ApplicationConfig) GetStudentByIdHandler(w http.ResponseWriter, r *ht
 	json.NewEncoder(w).Encode(student)
 
 }
-
-
 
 func (app *ApplicationConfig) DeleteStudentByIdHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -138,9 +136,9 @@ func (app *ApplicationConfig) DeleteStudentByIdHandler(w http.ResponseWriter, r 
 	fmt.Println("==========Student Id===========", id)
 
 	ctx := r.Context()
-	 err = app.Store.Student.DeleteStudentByID(ctx, id)
+	err = app.Store.Student.DeleteStudentByID(ctx, id)
 	if err != nil {
-		switch{
+		switch {
 		case errors.Is(err, sql.ErrNoRows):
 			app.NotfoundError(w, r, err)
 			return
@@ -153,5 +151,36 @@ func (app *ApplicationConfig) DeleteStudentByIdHandler(w http.ResponseWriter, r 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	// json.NewEncoder(w).Encode(student)
+
+}
+
+func (app *ApplicationConfig) DeactivateStudentByIdHandler(w http.ResponseWriter, r *http.Request) {
+
+	var req validation.StudentProxy
+
+	if err := ReadJSONRequest(w, r, &req); err != nil {
+
+		app.BadRequestError(w, r, err)
+		return
+	}
+
+	log.Println(req.Id)
+	fmt.Println("==========Student Id===========", req.Id)
+
+	ctx := r.Context()
+	response, err := app.Store.Student.DeactivateStudentByID(ctx, &req)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			app.NotfoundError(w, r, err)
+			return
+		default:
+			app.InternalServerError(w, r, err)
+			return
+		}
+	}
+
+	WriteJSONResponse(w, http.StatusOK, response)
 
 }

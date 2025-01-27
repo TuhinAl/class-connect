@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"golang-api/internal/validation"
 	"golang-api/models"
 )
 
@@ -16,6 +17,7 @@ type Storage struct {
 		CreateStudent(ctx context.Context, student *models.Student) (*models.Student, error)
 		GetStudentByID(ctx context.Context, id int64) (*models.Student, error)
 		DeleteStudentByID(ctx context.Context, id int64) error
+		DeactivateStudentByID(ctx context.Context, student *validation.StudentProxy) (*validation.StudentProxy, error)
 	}
 	//Teacher TeacherRepository
 }
