@@ -31,6 +31,7 @@ func ExternalRoutes(app *ApplicationConfig) http.Handler {
 			router.Get("/get-by-id/{studentId}", app.GetStudentByIdHandler)
 			router.Delete("/delete-by-id/{studentId}", app.DeleteStudentByIdHandler)
 			router.Put("/deactivate-by-id", app.DeactivateStudentByIdHandler)
+			router.Get("/get-all", app.GetAllStudentsHandler)
 		})
 	})
 

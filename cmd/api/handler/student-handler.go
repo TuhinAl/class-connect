@@ -170,6 +170,17 @@ func (app *ApplicationConfig) DeactivateStudentByIdHandler(w http.ResponseWriter
 	ctx := r.Context()
 	response, err := app.Store.Student.DeactivateStudentByID(ctx, &req)
 
+	// var proxyRespose *validation.StudentProxy
+
+	proxyRespose := &validation.StudentResponseProxy{
+		Id:        response.Id,
+		StudentId: response.StudentId,
+		FirstName: response.FirstName,
+		LastName:  response.LastName,
+		Phone:     response.Phone,
+		Email:     response.Email,
+		IsActive:  response.IsActive,
+	}
 	if err != nil {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
@@ -181,6 +192,39 @@ func (app *ApplicationConfig) DeactivateStudentByIdHandler(w http.ResponseWriter
 		}
 	}
 
-	WriteJSONResponse(w, http.StatusOK, response)
+	WriteJSONResponse(w, http.StatusOK, &proxyRespose)
+
+}
+
+
+func (app *ApplicationConfig) GetAllStudentsHandler(w http.ResponseWriter, r *http.Request) {
+
+	var req validation.StudentRequestProxy
+
+	if err := ReadJSONRequest(w, r, &req); err != nil {
+
+		app.BadRequestError(w, r, err)
+		return
+	}
+
+	log.Println(req.Id)
+	fmt.Println("==========Student Id===========", req.Id)
+
+	ctx := r.Context()
+	responses, err := app.Store.Student.GetAllStudents(ctx, &req)
+
+	// var proxyRespose *validation.StudentProxy
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			app.NotfoundError(w, r, err)
+			return
+		default:
+			app.InternalServerError(w, r, err)
+			return
+		}
+	}
+
+	WriteJSONResponse(w, http.StatusOK, responses)
 
 }
