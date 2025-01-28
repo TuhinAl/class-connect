@@ -183,14 +183,15 @@ func (s *StudentStore) DeactivateStudentByID(ctx context.Context, studentReq *va
 	return &student, err
 }
 
-func (s *StudentStore) GetAllStudents(ctx context.Context, studentReq *validation.StudentRequestProxy) ([]validation.StudentResponseProxy, error) {
+func (s *StudentStore) GetAllStudents(ctx context.Context) ([]validation.StudentResponseProxy, error) {
 	var response []validation.StudentResponseProxy
-	query := `SELECT id, first_name, last_name, student_id, email, phone WHERE is_active is true RETURNING id, first_name, last_name, student_id, email, phone`
+	query := `SELECT id, first_name, last_name, student_id, email, phone from student_information WHERE is_active = true`
 
-	rows, err := s.db.QueryContext(ctx, query, studentReq.Id, studentReq.IsActive)
+	rows, err := s.db.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 	for rows.Next() {
 		var student validation.StudentResponseProxy
 		err := rows.Scan(

@@ -198,20 +198,8 @@ func (app *ApplicationConfig) DeactivateStudentByIdHandler(w http.ResponseWriter
 
 
 func (app *ApplicationConfig) GetAllStudentsHandler(w http.ResponseWriter, r *http.Request) {
-
-	var req validation.StudentRequestProxy
-
-	if err := ReadJSONRequest(w, r, &req); err != nil {
-
-		app.BadRequestError(w, r, err)
-		return
-	}
-
-	log.Println(req.Id)
-	fmt.Println("==========Student Id===========", req.Id)
-
 	ctx := r.Context()
-	responses, err := app.Store.Student.GetAllStudents(ctx, &req)
+	responses, err := app.Store.Student.GetAllStudents(ctx)
 
 	// var proxyRespose *validation.StudentProxy
 	if err != nil {
