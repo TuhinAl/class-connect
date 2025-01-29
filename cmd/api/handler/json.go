@@ -30,3 +30,16 @@ type envelop struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
 }
+
+type ApiResponse struct {
+	Data       interface{} `json:"data"`
+	Pagination Pagination  `json:"pagination"`
+	Success    bool        `json:"success"`
+	Message    string      `json:"message"`	
+}
+
+type Pagination struct {
+    Page  int    `json:"page"`
+    Limit int    `json:"limit"`
+    Sort  string `json:"sort"`
+}
