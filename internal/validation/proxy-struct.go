@@ -32,13 +32,13 @@ type StudentResponseProxy struct {
 }
 
 type StudentRequestProxy struct {
-	Id            int    `json:"id"` // will Improve to uuid
-	IsActive      bool   `json:"is_active"`
-	AdmissionDate string `json:"admission_date"`
-	Page          Page   `json:"page"`
+	Id            int      `json:"id"` // will Improve to uuid
+	IsActive      bool     `json:"is_active"`
+	AdmissionDate string   `json:"admission_date"`
+	Pageable      Pageable `json:"pageable"`
 }
 
-type Page struct {
+type Pageable struct {
 	Page int `json:"page"`
 	Size int `json:"size"`
 }

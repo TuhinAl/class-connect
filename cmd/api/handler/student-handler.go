@@ -196,10 +196,22 @@ func (app *ApplicationConfig) DeactivateStudentByIdHandler(w http.ResponseWriter
 
 }
 
-
 func (app *ApplicationConfig) GetAllStudentsHandler(w http.ResponseWriter, r *http.Request) {
+
+	var req validation.StudentRequestProxy
+	var limit, offset int
+
+	if err := ReadJSONRequest(w, r, &req); err != nil {
+
+		app.BadRequestError(w, r, err)
+		return
+	}
+
+	limit = req.Pageable.Size
+	offset = (req.Pageable.Page - 1) * limit
+
 	ctx := r.Context()
-	responses, err := app.Store.Student.GetAllStudents(ctx)
+	responses, err := app.Store.Student.GetAllStudents(ctx, limit, offset)
 
 	// var proxyRespose *validation.StudentProxy
 	if err != nil {
