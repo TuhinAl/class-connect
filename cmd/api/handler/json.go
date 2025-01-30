@@ -38,8 +38,20 @@ type ApiResponse struct {
 	Message    string      `json:"message"`	
 }
 
+type Pageable struct {
+	Page int `json:"page"`
+	Size int `json:"size"`
+}
+
 type Pagination struct {
     Page  int    `json:"page"`
     Limit int    `json:"limit"`
     Sort  string `json:"sort"`
+}
+
+type PageResponse struct {
+	TotalRows int  `json:"total_rows"`
+	CurrPage  int  `json:"curr_page"`
+	TotalPage int  `json:"total_page"`
+	Data interface{} `json:"data"`
 }

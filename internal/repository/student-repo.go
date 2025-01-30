@@ -183,9 +183,11 @@ func (s *StudentStore) DeactivateStudentByID(ctx context.Context, studentReq *va
 	return &student, err
 }
 
-func (s *StudentStore) GetAllStudents(ctx context.Context, limit int, offset int) ([]validation.StudentResponseProxy, error) {
+func (s *StudentStore) GetAllStudents(ctx context.Context, limit int, offset int) ([]validation.StudentResponseProxy, int, error) {
+
 	var response []validation.StudentResponseProxy
-	query := `SELECT id, first_name, last_name, student_id,
+	totalResponse := 0
+	query := `SELECT COUNT(*) OVER() AS total_rows, id, first_name, last_name, student_id,
 	 email, phone from student_information WHERE is_active = true
 	 LIMIT $1 OFFSET $2
 	 `
@@ -193,12 +195,13 @@ func (s *StudentStore) GetAllStudents(ctx context.Context, limit int, offset int
 
 	rows, err := s.db.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var student validation.StudentResponseProxy
 		err := rows.Scan(
+			&totalResponse,
 			&student.Id,
 			&student.FirstName,
 			&student.LastName,
@@ -207,9 +210,9 @@ func (s *StudentStore) GetAllStudents(ctx context.Context, limit int, offset int
 			&student.Phone,
 		)
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		response = append(response, student)
 	}
-	return response, rows.Err()
+	return response, totalResponse, rows.Err()
 }

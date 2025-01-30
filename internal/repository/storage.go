@@ -18,7 +18,7 @@ type Storage struct {
 		GetStudentByID(ctx context.Context, id int64) (*models.Student, error)
 		DeleteStudentByID(ctx context.Context, id int64) error
 		DeactivateStudentByID(ctx context.Context, student *validation.StudentProxy) (*validation.StudentProxy, error)
-		GetAllStudents(ctx context.Context, limit int, offset int) ([]validation.StudentResponseProxy, error)
+		GetAllStudents(ctx context.Context, limit int, offset int) ([]validation.StudentResponseProxy, int, error)
 	}
 	//Teacher TeacherRepository
 }

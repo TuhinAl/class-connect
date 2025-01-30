@@ -199,6 +199,7 @@ func (app *ApplicationConfig) DeactivateStudentByIdHandler(w http.ResponseWriter
 func (app *ApplicationConfig) GetAllStudentsHandler(w http.ResponseWriter, r *http.Request) {
 
 	var req validation.StudentRequestProxy
+	var custopResponse PageResponse
 	var limit, offset int
 
 	if err := ReadJSONRequest(w, r, &req); err != nil {
@@ -208,10 +209,10 @@ func (app *ApplicationConfig) GetAllStudentsHandler(w http.ResponseWriter, r *ht
 	}
 
 	limit = req.Pageable.Size
-	offset = (req.Pageable.Page - 1) * limit
+	offset = req.Pageable.Page * limit
 
 	ctx := r.Context()
-	responses, err := app.Store.Student.GetAllStudents(ctx, limit, offset)
+	responses, totalRows, err := app.Store.Student.GetAllStudents(ctx, limit, offset)
 
 	// var proxyRespose *validation.StudentProxy
 	if err != nil {
@@ -224,7 +225,13 @@ func (app *ApplicationConfig) GetAllStudentsHandler(w http.ResponseWriter, r *ht
 			return
 		}
 	}
+	custopResponse = PageResponse{
+		TotalRows: totalRows,
+		CurrPage:  req.Pageable.Page,
+		TotalPage: (totalRows / limit),
+		Data:      responses,
+	}
 
-	WriteJSONResponse(w, http.StatusOK, responses)
+	WriteJSONResponse(w, http.StatusOK, custopResponse)
 
 }
