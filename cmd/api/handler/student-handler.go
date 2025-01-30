@@ -17,18 +17,18 @@ import (
 
 func GetStudentHandler(w http.ResponseWriter, r *http.Request) {
 	student := models.Student{
-		ID:            1,
-		StudentId:     1001,
-		FirstName:     "John",
-		LastName:      "Doe",
-		FatherName:    "Michael Doe",
-		Phone:         "+880-1234567890",
-		Gender:        "Male",
-		Course:        "Computer Science",
-		Email:         "john.doe@example.com",
-		IsActive:      true,
-		ClassID:       101,
-		ClassName:     "Grade 12",
+		ID:         1,
+		StudentId:  1001,
+		FirstName:  "John",
+		LastName:   "Doe",
+		FatherName: "Michael Doe",
+		Phone:      "+880-1234567890",
+		Gender:     "Male",
+		Course:     "Computer Science",
+		Email:      "john.doe@example.com",
+		IsActive:   true,
+		ClassID:    101,
+		ClassName:  "Grade 12",
 		// Password:      "hashed_password_here",
 		FatherPhone:   "+880-9876543210",
 		AdmissionDate: time.Now().Format("2006-01-02"),
@@ -51,7 +51,7 @@ func (app *ApplicationConfig) CreateStudentHandler(w http.ResponseWriter, r *htt
 		app.BadRequestError(w, r, err)
 		return
 	}
-
+	fmt.Println("==========Password===========", payload.Password)
 	ctx := r.Context()
 	// Create the student
 	student := &models.Student{
@@ -64,14 +64,21 @@ func (app *ApplicationConfig) CreateStudentHandler(w http.ResponseWriter, r *htt
 		Course:       payload.Course,
 		Email:        payload.Email,
 		IsActive:     payload.IsActive,
+		IsVerfied:    false,
 		ClassID:      payload.ClassID,
 		ClassName:    payload.ClassName,
-		// Password:     payload.Password,
 		FatherPhone:  payload.FatherPhone,
 		AdmissionFee: payload.AdmissionFee,
 		TotalFee:     payload.TotalFee,
 		RemainingFee: payload.RemainingFee,
 		MonthlyFee:   payload.MonthlyFee,
+	}
+
+	err := student.Password.Set(payload.Password)
+
+	if err != nil {
+		app.BadRequestError(w, r, err)
+		return
 	}
 
 	// createdStudent, err := repository.StudentRepository.CreateStudent(ctx, student)
@@ -235,7 +242,6 @@ func (app *ApplicationConfig) GetAllStudentsHandler(w http.ResponseWriter, r *ht
 	WriteJSONResponse(w, http.StatusOK, custopResponse)
 
 }
-
 
 func (app *ApplicationConfig) GetStudentByEmailHandler(w http.ResponseWriter, r *http.Request) {
 

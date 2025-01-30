@@ -25,6 +25,7 @@ type StudentStore struct {
 
 func (studentStore *StudentStore) CreateStudent(ctx context.Context, student *models.Student) (*models.Student, error) {
 
+	fmt.Println("==========PASS===========", student.Password)
 	query := `INSERT INTO student_information (
 		student_id,
 		first_name,
@@ -35,6 +36,7 @@ func (studentStore *StudentStore) CreateStudent(ctx context.Context, student *mo
 		course,
 		email,
 		is_active,
+		is_verified,
 		class_id,
 		class_name,
 		password,
@@ -44,9 +46,9 @@ func (studentStore *StudentStore) CreateStudent(ctx context.Context, student *mo
 		remaining_fee,
 		monthly_fee
 	) VALUES (
-		$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
+		$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
 	) RETURNING id, student_id, first_name, last_name, father_name, phone, gender,
-	  course, email, is_active, class_id, class_name, password, father_phone, admission_date, admission_fee, 
+	  course, email, is_active, is_verified, class_id, class_name, password, father_phone, admission_date, admission_fee, 
 	  total_fee, remaining_fee, monthly_fee
 	`
 	err := studentStore.db.QueryRowContext(
@@ -61,9 +63,10 @@ func (studentStore *StudentStore) CreateStudent(ctx context.Context, student *mo
 		student.Course,
 		student.Email,
 		student.IsActive,
+		student.IsVerfied,
 		student.ClassID,
 		student.ClassName,
-		student.Password,
+		student.Password.Hash,
 		student.FatherPhone,
 		student.AdmissionFee,
 		student.TotalFee,
@@ -80,9 +83,10 @@ func (studentStore *StudentStore) CreateStudent(ctx context.Context, student *mo
 		&student.Course,
 		&student.Email,
 		&student.IsActive,
+		&student.IsVerfied,
 		&student.ClassID,
 		&student.ClassName,
-		&student.Password,
+		&student.Password.Hash,
 		&student.FatherPhone,
 		&student.AdmissionDate,
 		&student.AdmissionFee,

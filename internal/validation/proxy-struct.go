@@ -11,6 +11,7 @@ type StudentProxy struct {
 	Course       string  `json:"course"` // todo: enum
 	Email        string  `json:"email"`
 	IsActive     bool    `json:"is_active"`
+	IsVerified   bool    `json:"is_verified"`
 	ClassID      int     `json:"class_id"`
 	ClassName    string  `json:"class_name"` // todo: enum
 	Password     string  `json:"password,omitempty"`

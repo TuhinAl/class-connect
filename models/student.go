@@ -17,6 +17,7 @@ type Student struct {
 	Course        string   `json:"course"` // todo: enum
 	Email         string   `json:"email"`
 	IsActive      bool     `json:"is_active"`
+	IsVerfied     bool     `json:"is_verified"`
 	ClassID       int      `json:"class_id"`
 	ClassName     string   `json:"class_name"` // todo: enum
 	Password      password `json:"-"`
@@ -28,30 +29,29 @@ type Student struct {
 	MonthlyFee    float64  `json:"monthly_fee"`
 }
 
-//plaintext and hashed versions of the password for a user
+// plaintext and hashed versions of the password for a user
 type password struct {
-	plaintext *string
-	hash      []byte
+	Plaintext *string
+	Hash      []byte
 }
 
-
-//calculates the bcrypt hash of a plaintext password, and stores both the hash and the plaintext versions in the struct
+// calculates the bcrypt hash of a plaintext password, and stores both the hash and the plaintext versions in the struct
 func (p *password) Set(plaintextPassword string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(plaintextPassword), 12)
 	if err != nil {
 		return err
 	}
-	p.plaintext = &plaintextPassword
-	p.hash = hash
+	p.Plaintext = &plaintextPassword
+	p.Hash = hash
 	return nil
 }
 
 /* checks whether the provided plaintext password matches the
- hashed password stored in the struct, returning true if it matches and false otherwise.
- */
+hashed password stored in the struct, returning true if it matches and false otherwise.
+*/
 
 func (p *password) Matches(plaintextPassword string) (bool, error) {
-	err := bcrypt.CompareHashAndPassword(p.hash, []byte(plaintextPassword))
+	err := bcrypt.CompareHashAndPassword(p.Hash, []byte(plaintextPassword))
 	if err != nil {
 		switch {
 		case errors.Is(err, bcrypt.ErrMismatchedHashAndPassword):
