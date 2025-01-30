@@ -19,6 +19,7 @@ type Storage struct {
 		DeleteStudentByID(ctx context.Context, id int64) error
 		DeactivateStudentByID(ctx context.Context, student *validation.StudentProxy) (*validation.StudentProxy, error)
 		GetAllStudents(ctx context.Context, limit int, offset int) ([]validation.StudentResponseProxy, int, error)
+		GetStudentByEmail(ctx context.Context,email string) (*validation.StudentResponseProxy, error)
 	}
 	//Teacher TeacherRepository
 }

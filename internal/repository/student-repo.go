@@ -216,3 +216,25 @@ func (s *StudentStore) GetAllStudents(ctx context.Context, limit int, offset int
 	}
 	return response, totalResponse, rows.Err()
 }
+
+func (s *StudentStore) GetStudentByEmail(ctx context.Context, email string) (*validation.StudentResponseProxy, error) {
+
+	query := `SELECT id, first_name, last_name, student_id,
+	 email, phone, password from student_information WHERE is_active = true and email = $1`
+
+	var student validation.StudentResponseProxy
+	err := s.db.QueryRowContext(ctx, query, email).Scan(
+		&student.Id,
+		&student.FirstName,
+		&student.LastName,
+		&student.StudentId,
+		&student.Email,
+		&student.Phone,
+		&student.Password,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &student, nil
+}

@@ -28,6 +28,7 @@ type StudentResponseProxy struct {
 	LastName  string `json:"last_name"`
 	Phone     string `json:"phone"`
 	Email     string `json:"email"`
+	Password  string `json:"password"`
 	IsActive  bool   `json:"is_active"`
 }
 
@@ -35,6 +36,7 @@ type StudentRequestProxy struct {
 	Id            int      `json:"id"` // will Improve to uuid
 	IsActive      bool     `json:"is_active"`
 	AdmissionDate string   `json:"admission_date"`
+	Email         string   `json:"email"`
 	Pageable      Pageable `json:"pageable"`
 }
 

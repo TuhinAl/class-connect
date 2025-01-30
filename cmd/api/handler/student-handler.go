@@ -29,7 +29,7 @@ func GetStudentHandler(w http.ResponseWriter, r *http.Request) {
 		IsActive:      true,
 		ClassID:       101,
 		ClassName:     "Grade 12",
-		Password:      "hashed_password_here",
+		// Password:      "hashed_password_here",
 		FatherPhone:   "+880-9876543210",
 		AdmissionDate: time.Now().Format("2006-01-02"),
 		AdmissionFee:  5000.00,
@@ -66,7 +66,7 @@ func (app *ApplicationConfig) CreateStudentHandler(w http.ResponseWriter, r *htt
 		IsActive:     payload.IsActive,
 		ClassID:      payload.ClassID,
 		ClassName:    payload.ClassName,
-		Password:     payload.Password,
+		// Password:     payload.Password,
 		FatherPhone:  payload.FatherPhone,
 		AdmissionFee: payload.AdmissionFee,
 		TotalFee:     payload.TotalFee,
@@ -233,5 +233,33 @@ func (app *ApplicationConfig) GetAllStudentsHandler(w http.ResponseWriter, r *ht
 	}
 
 	WriteJSONResponse(w, http.StatusOK, custopResponse)
+
+}
+
+
+func (app *ApplicationConfig) GetStudentByEmailHandler(w http.ResponseWriter, r *http.Request) {
+
+	var req validation.StudentRequestProxy
+
+	if err := ReadJSONRequest(w, r, &req); err != nil {
+		app.BadRequestError(w, r, err)
+		return
+	}
+
+	ctx := r.Context()
+	responses, err := app.Store.Student.GetStudentByEmail(ctx, req.Email)
+
+	// var proxyRespose *validation.StudentProxy
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			app.NotfoundError(w, r, err)
+			return
+		default:
+			app.InternalServerError(w, r, err)
+			return
+		}
+	}
+	WriteJSONResponse(w, http.StatusOK, &responses)
 
 }
