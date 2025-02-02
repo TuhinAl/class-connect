@@ -22,6 +22,13 @@ func main() {
 				MaxIdleConns: 20,
 				MaxIdleTime:  "15m",
 			},
+			SMTP: handler.SMTP{
+				Host:     "smtp.gmail.com",
+				Port:     465,
+				Username: "a033e9fca16213",
+				Password: "ad86d311e28d8b",
+				Sender:   "your_sender_email",
+			},
 		},
 	}
 

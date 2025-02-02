@@ -3,21 +3,31 @@ package handler
 import (
 	dbconfig "golang-api/internal/db-config"
 	"golang-api/internal/repository"
+	"golang-api/internal/utility/mailer"
 	"log"
 	"net/http"
 	"time"
 )
 
 type Config struct {
-	Host string `json:"host"`
-	Port string `json:"port"`
+	Host string            `json:"host"`
+	Port string            `json:"port"`
 	DB   dbconfig.DBConfig `json:"db"`
+	SMTP SMTP              `json:"smtp"`
+}
+
+type SMTP struct {
+	Host     string
+	Port     int
+	Username string
+	Password string
+	Sender   string
 }
 
 type ApplicationConfig struct {
-	Server Config 
+	Server Config
 	Store  repository.Storage
-
+	mailer mailer.Mailer
 }
 
 // func (app *ApplicationConfig) RunApp(mux *http.ServeMux) error {
