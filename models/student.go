@@ -6,6 +6,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type Role string
+
+const (
+    RoleStudent Role = "STUDENT"
+    RoleTeacher Role = "TEACHER"
+)
+
 type Student struct {
 	ID            int      `json:"id"`
 	StudentId     int64    `json:"student_id"` // will Improve to uuid
@@ -61,4 +68,22 @@ func (p *password) Matches(plaintextPassword string) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+type User struct {
+    ID       uint   `json:"id" gorm:"primaryKey"`
+    Email    string `json:"email" gorm:"unique;not null"`
+    Phone    string `json:"phone" gorm:"not null"`
+    Password string `json:"-" gorm:"not null"` // "-" prevents password from being included in JSON
+    Role     Role   `json:"role" gorm:"not null"`
+}
+
+type LoginRequest struct {
+    Email    string `json:"email" binding:"required,email"`
+    Password string `json:"password" binding:"required"`
+}
+
+type LoginResponse struct {
+    Token string `json:"token"`
+    User  User   `json:"user"`
 }
