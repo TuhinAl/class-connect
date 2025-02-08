@@ -9,7 +9,7 @@ require (
 
 require (
 	github.com/go-mail/mail/v2 v2.3.0
-	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	golang.org/x/crypto v0.32.0
 )
 
