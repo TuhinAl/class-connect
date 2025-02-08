@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"golang-api/internal/service"
+	"golang-api/internal/utility/token"
 	"golang-api/internal/validation"
 	"golang-api/models"
 	"log"
@@ -13,6 +16,12 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
+)
+
+var (
+	JWTSecretKey = []byte("your-secret-key") // In production, use environment variable
 )
 
 func GetStudentHandler(w http.ResponseWriter, r *http.Request) {
@@ -268,4 +277,54 @@ func (app *ApplicationConfig) GetStudentByEmailHandler(w http.ResponseWriter, r 
 	}
 	WriteJSONResponse(w, http.StatusOK, &responses)
 
+}
+
+func (app *ApplicationConfig) LoginHandler(email string, password string) (*token.LoginResponse, error) {
+	student, err := app.Store.Student.GetStudentByEmail(context.Background(), email)
+	if err != nil {
+		return nil, err
+	}
+	if student == nil {
+		return nil, errors.New("invalid credentials")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(student.Password), []byte(password))
+	if err != nil {
+		return nil, errors.New("invalid credentials")
+	}
+	// Generate JWT token
+	claims := service.CustomClaims{
+		ID:    student.Id,
+		Email: student.Email,
+		Phone: student.Phone,
+		Role:  string(student.Role),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	}
+
+	tkn := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := tkn.SignedString(JWTSecretKey)
+	if err != nil {
+		return nil, err
+	}
+	user := token.User{
+		ID:    student.Id,
+		Email: student.Email,
+		Phone: student.Phone,
+		Role:  student.Role,
+	}
+	return &token.LoginResponse{
+		Token: tokenString,
+		User:  user,
+	}, nil
+
+}
+
+// ValidateToken implements AuthService.
+func (app *ApplicationConfig) ValidateToken(tokenString string) (*jwt.Token, error) {
+	return jwt.ParseWithClaims(tokenString, &service.CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return JWTSecretKey, nil
+	})
 }

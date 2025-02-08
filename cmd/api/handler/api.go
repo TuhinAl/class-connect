@@ -22,6 +22,9 @@ func ExternalRoutes(app *ApplicationConfig) http.Handler {
 	// processing should be stopped.
 	router.Use(middleware.Timeout(60 * time.Second))
 
+
+	// router.Use(middleware.AuthMiddleware(app.AuthService))
+
 	router.Route("/v1", func(router chi.Router) {
 		router.Get("/health", ApplicationHealthHandler)
 
@@ -33,6 +36,7 @@ func ExternalRoutes(app *ApplicationConfig) http.Handler {
 			router.Put("/deactivate-by-id", app.DeactivateStudentByIdHandler)
 			router.Get("/get-all", app.GetAllStudentsHandler)
 			router.Get("/get-by-email", app.GetStudentByEmailHandler)
+			// router.Get("/login", app.LoginHandler)
 		})
 	})
 
