@@ -7,8 +7,12 @@ import (
 	"time"
 )
 
+type Role string
+
 const (
-	ScopeActivation = "activation"
+	ScopeActivation      = "activation"
+	RoleStudent     Role = "STUDENT"
+	RoleTeacher     Role = "TEACHER"
 )
 
 type Token struct {
@@ -17,6 +21,24 @@ type Token struct {
 	UserID    int64
 	Expiry    time.Time
 	Scope     string
+}
+
+type User struct {
+	ID       int   `json:"id" gorm:"primaryKey"`
+	Email    string `json:"email" gorm:"unique;not null"`
+	Phone    string `json:"phone" gorm:"not null"`
+	Password string `json:"-" gorm:"not null"` // "-" prevents password from being included in JSON
+	Role     Role   `json:"role" gorm:"not null"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+type LoginResponse struct {
+	Token string `json:"token"`
+	User  User   `json:"user"`
 }
 
 func generateToken(userID int64, ttl time.Duration, scope string) (*Token, error) {

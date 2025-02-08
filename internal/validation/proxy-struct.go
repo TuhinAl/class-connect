@@ -1,5 +1,7 @@
 package validation
 
+import "golang-api/internal/utility/token"
+
 type StudentProxy struct {
 	Id           int     `json:"id"`         // will Improve to uuid
 	StudentId    int64   `json:"student_id"` // will Improve to uuid
@@ -31,6 +33,7 @@ type StudentResponseProxy struct {
 	Email     string `json:"email"`
 	Password  string `json:"password"`
 	IsActive  bool   `json:"is_active"`
+	Role          token.Role `json:"role"`
 }
 
 type StudentRequestProxy struct {
