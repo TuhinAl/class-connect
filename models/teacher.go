@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"golang-api/internal/utility/token"
+	"time"
+)
 
 type Teacher struct {
 	Id           int64     `json:"id"`
@@ -13,4 +16,5 @@ type Teacher struct {
 	Email        string    `json:"email"`
 	Gender       string    `json:"gender"`
 	Password     string    `json:"password,omitempty"`
+	Role          token.Role `json:"role" gorm:"not null"`
 }

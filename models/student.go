@@ -2,38 +2,33 @@ package models
 
 import (
 	"errors"
+	"golang-api/internal/utility/token"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-type Role string
-
-const (
-    RoleStudent Role = "STUDENT"
-    RoleTeacher Role = "TEACHER"
-)
-
 type Student struct {
-	ID            int      `json:"id"`
-	StudentId     int64    `json:"student_id"` // will Improve to uuid
-	FirstName     string   `json:"first_name"`
-	LastName      string   `json:"last_name"`
-	FatherName    string   `json:"father_name"`
-	Phone         string   `json:"phone"`
-	Gender        string   `json:"gender"` // todo: enum
-	Course        string   `json:"course"` // todo: enum
-	Email         string   `json:"email"`
-	IsActive      bool     `json:"is_active"`
-	IsVerfied     bool     `json:"is_verified"`
-	ClassID       int      `json:"class_id"`
-	ClassName     string   `json:"class_name"` // todo: enum
-	Password      password `json:"-"`
-	FatherPhone   string   `json:"father_phone"`
-	AdmissionDate string   `json:"admission_date"` // todo: date
-	AdmissionFee  float64  `json:"admission_fee"`
-	TotalFee      float64  `json:"total_fee"`
-	RemainingFee  float64  `json:"remaining_fee"`
-	MonthlyFee    float64  `json:"monthly_fee"`
+	ID            int        `json:"id"`
+	StudentId     int64      `json:"student_id"` // will Improve to uuid
+	FirstName     string     `json:"first_name"`
+	LastName      string     `json:"last_name"`
+	FatherName    string     `json:"father_name"`
+	Phone         string     `json:"phone"`
+	Gender        string     `json:"gender"` // todo: enum
+	Course        string     `json:"course"` // todo: enum
+	Email         string     `json:"email"`
+	IsActive      bool       `json:"is_active"`
+	IsVerfied     bool       `json:"is_verified"`
+	ClassID       int        `json:"class_id"`
+	ClassName     string     `json:"class_name"` // todo: enum
+	Password      password   `json:"-"`
+	FatherPhone   string     `json:"father_phone"`
+	AdmissionDate string     `json:"admission_date"` // todo: date
+	AdmissionFee  float64    `json:"admission_fee"`
+	TotalFee      float64    `json:"total_fee"`
+	RemainingFee  float64    `json:"remaining_fee"`
+	MonthlyFee    float64    `json:"monthly_fee"`
+	Role          token.Role `json:"role"`
 }
 
 // plaintext and hashed versions of the password for a user
@@ -68,22 +63,4 @@ func (p *password) Matches(plaintextPassword string) (bool, error) {
 		}
 	}
 	return true, nil
-}
-
-type User struct {
-    ID       uint   `json:"id" gorm:"primaryKey"`
-    Email    string `json:"email" gorm:"unique;not null"`
-    Phone    string `json:"phone" gorm:"not null"`
-    Password string `json:"-" gorm:"not null"` // "-" prevents password from being included in JSON
-    Role     Role   `json:"role" gorm:"not null"`
-}
-
-type LoginRequest struct {
-    Email    string `json:"email" binding:"required,email"`
-    Password string `json:"password" binding:"required"`
-}
-
-type LoginResponse struct {
-    Token string `json:"token"`
-    User  User   `json:"user"`
 }
